@@ -1,8 +1,7 @@
 <template>
     <section class="todo-list">
         <div class="list" id="todo-list">
-            {{ todo }}
-            <div v-for="todo in orderedTodos" :key="todo.id" :class="`todo-item ${todo.done && 'done'}`">
+            <div v-for="todo in todos_asc" :key="todo.id" :class="`todo-item ${todo.done && 'done'}`">
                 <label>
                     <input type="checkbox" v-model="todo.done" />
                     <span :class="`bubble ${todo.category == 'business'
@@ -16,7 +15,7 @@
                 </div>
 
                 <div class="actions">
-                    <button class="delete" @click="removeTodo(todo)">Delete</button>
+                    <button class="delete" @click="passTodo(todo)">Delete</button>
                 </div>
             </div>
         </div>
@@ -24,17 +23,21 @@
 </template>
 
 <script>
-    export default {
-        name: 'TodoList',
-        data() {
-            return {
-            }
-        },
-        props: {
-            orderedTodos: {
-                type: Array,
-                default: () => []
-            }
+export default {
+    name: 'TodoList',
+    data() {
+        return {
+        }
+    },
+    props: {
+        todos_asc: {
+            type: Array,
+        }
+    },
+    methods: {
+        passTodo(todo) {
+            this.$emit('passTodo', todo)
         }
     }
+}
 </script>

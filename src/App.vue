@@ -2,11 +2,12 @@
   <main class="app">
     <GreetingSection />
     <AddTodo @passData="getDataFromAddTodo" />
-    <TodoList :orderedTodos="orderedTodos" />
+    <TodoList @passTodo="removeTodo" :todos_asc="todos_asc" />
   </main>
 </template>
 
 <script>
+
 import GreetingSection from './components/GreetingSection.vue';
 import AddTodo from './components/AddTodo.vue';
 import TodoList from './components/TodoList.vue';
@@ -36,12 +37,14 @@ export default {
         done: false,
         editable: false,
       })
+    },
+    removeTodo(todo) {
+      this.todos = this.todos.filter((t) => t !== todo)
     }
   },
   computed: {
     todos_asc() {
-      const orderedTodos= [...this.todos].sort((a, b) => { a.id - b.id })
-      return orderedTodos
+      return [...this.todos].sort((a, b) => b.id - a.id)
     }
   }
 }
