@@ -1,6 +1,6 @@
 <template>
     <section class="create-todo">
-        <form id="new-todo-form" @submit.prevent="addTodo">
+        <form id="new-todo-form" @submit.prevent="passData">
 
             <h4>What's on your todo list?</h4>
             <input type="text" name="content" id="content" placeholder="e.g. make a video" v-model="input_content" />
@@ -29,8 +29,6 @@
 
 
 <script>
-import { reactive } from 'vue'
-
 
 export default {
     name: 'AddTodo',
@@ -38,21 +36,15 @@ export default {
         return {
             input_content: '',
             input_category: null,
-            todos: reactive([])
         }
     },
     methods: {
-        addTodo() {
-            if (this.input_content.trim() === '' || this.input_category === null ) {
-                return
-            }
-            this.todos.push({
+        passData() {
+            const data = {
                 content: this.input_content,
                 category: this.input_category,
-                done: false,
-                editable: false,
-                createdAt: new Date().getTime()
-            })
+            }
+            this.$emit('passData', data)
             this.input_content = ''
         }
     }
