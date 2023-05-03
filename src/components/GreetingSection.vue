@@ -10,14 +10,9 @@ export default {
     name: "GreetingSection",
     data() {
         return {
-            name: localStorage.getItem("name") || "" // return names value from local storage
+            name: "" 
         }
     },
-    watch: {
-        name(newName) {
-            localStorage.setItem("name", newName) // write name to local storage whenever it changes
-        }
-    }
 }
 </script>
 
