@@ -23,7 +23,6 @@
             </div>
             <input type="submit" value="Add todo" />
         </form>
-        <hr>
     </section>
 </template>
 
@@ -51,9 +50,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-hr {
-    margin-top: 10px;
-}
-</style>

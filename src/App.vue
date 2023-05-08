@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import GreetingSection from './components/GreetingSection.vue';
 import AddTodo from './components/AddTodo.vue';
 import TodoList from './components/TodoList.vue';
@@ -40,6 +41,11 @@ export default {
     deletePassedTodo(localTodoItem) {
       this.todos = this.todos.filter((t) => t !== localTodoItem)
     },
+  },
+  async created() {
+    const response = await axios.get('http://localhost:8000/todo')
+    const todos = response.data
+    this.todos = todos
   },
   computed: {
     todos_asc() {

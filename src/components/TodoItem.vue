@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 export default {
     name: "TodoItem",
     props: ["todoItem"],
@@ -28,7 +29,6 @@ export default {
         passTodo(localTodoItem) {
             this.$emit('passTodo', localTodoItem)
         }
-    }
-
+    },
 }
 </script>
