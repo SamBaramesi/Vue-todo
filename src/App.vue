@@ -2,12 +2,11 @@
   <main class="app">
     <GreetingSection />
     <AddTodo @passData="getDataFromAddTodo" />
-    <TodoList @passTodo="removeTodo" :todos_asc="todos_asc" />
+    <TodoList @passTodo="removeTodo" @getPassedTodo="deletePassedTodo" :todos_asc="todos_asc" />
   </main>
 </template>
 
 <script>
-
 import GreetingSection from './components/GreetingSection.vue';
 import AddTodo from './components/AddTodo.vue';
 import TodoList from './components/TodoList.vue';
@@ -38,9 +37,9 @@ export default {
         editable: false,
       })
     },
-    removeTodo(todo) {
-      this.todos = this.todos.filter((t) => t !== todo)
-    }
+    deletePassedTodo(localTodoItem) {
+      this.todos = this.todos.filter((t) => t !== localTodoItem)
+    },
   },
   computed: {
     todos_asc() {
@@ -48,5 +47,4 @@ export default {
     }
   }
 }
-
 </script>
