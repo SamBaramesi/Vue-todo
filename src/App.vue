@@ -23,21 +23,35 @@ export default {
   data() {
     return {
       todos: reactive([]),
-      newTodo: reactive({})
     }
   },
   methods: {
-    getDataFromAddTodo(data) {
+    async getDataFromAddTodo(data) {
       if (data.content === '' || data.category === null) {
         return
       }
-      const newTodo = {}
-      this.todos.push(newTodo)
-      this.newTodo = newTodo // Update newTodo object with new data
-    },
+      await axios.post('http://localhost:8000/todo', {
+        id: this.todos.length + 1,
+        content: data.content,
+        category: data.category,
+        done: false,
+        editable: false,
+      })
+      this.todos.push(
+        {
+          id: this.todos.length + 1,
+          content: data.content,
+          category: data.category,
+          done: false,
+          editable: false,
+        }
+      )
+    }
   },
   deletePassedTodo(localTodoItem) {
     this.todos = this.todos.filter((t) => t !== localTodoItem)
+
+    axios.delete('http://localhost:8000/del-todos', localTodoItem)
   },
   async created() {
     try {
@@ -46,15 +60,6 @@ export default {
       const result1 = response.data
       this.todos = result1
 
-      // second Axios request
-      if (Object.keys(this.newTodo) !== undefined) {
-        await axios.post('http://localhost:8000/todo', {
-          content: this.newTodo.content,
-          category: this.newTodo.category,
-          done: this.newTodo.done,
-          editable: this.newTodo.done,
-        })
-      }
     } catch (error) {
       console.error(error);
     }
