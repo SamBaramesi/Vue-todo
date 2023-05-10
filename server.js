@@ -1,14 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
-app.use(express.json())
-const uri = 'mongodb+srv://sbaramesi:Hossein1998@todo-list-db.jr1nttt.mongodb.net/test?retryWrites=true&w=majority';
+app.use(cors());
+app.use(express.json());
+
+const uri = 'mongodb+srv://sbaramesi:Hossein1998@cluster-todolist-v2.d4mtt8r.mongodb.net/vue-todos?retryWrites=true&w=majority';
 
 // Connect to MongoDB using mongoose
 mongoose.connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
@@ -24,17 +27,6 @@ const todoSchema = new mongoose.Schema({
 // Create a Todo model
 const Todo = mongoose.model('Todo', todoSchema);
 
-app.get('/api/name', (req, res) => {
-
-})
-
-app.get('/api/get-todos/:todoId', (req, res) => {
-
-})
-
-
-
-
 app.post('/todo', (req, res) => {
     // Create a new Todo instance based on the req.body data
     console.log(req.body)
@@ -46,27 +38,28 @@ app.post('/todo', (req, res) => {
         editable: req.body.editable
     });
 
-    newTodo.save()
-        .then(() => {
-            // Send a response to the client
-            res.send('Todo added successfully');
-        })
-        .catch(err => {
-            // Send an error response to the client
-            res.status(500).send(err.message);
-        });
+    newTodo.save().then(() => {
+        // Send a response to the client
+        res.send('Todo added successfully');
+    }).catch(err => {
+        // Send an error response to the client
+        res.status(500).send(err.message);
+    });
 });
 
 // Define a route for the homepage
-app.get('/todo', async (req, res) => {
+app.get('/get-todos', async (req, res) => {
     try {
-      const todos = await Todo.find({});
-      res.send(todos);
+        const todos = await Todo.find({});
+        if (todos.length === 0) {
+            return res.status(404).send('You have no todos');
+        }
+        res.send(todos);
     } catch (error) {
-      console.error(error);
-      res.status(500).send('Error fetching todos from database');
+        console.error(error);
+        res.status(500).send('Error fetching todos from database');
     }
-  });
+});
 
 // Start the server
 app.listen(8000, () => {
