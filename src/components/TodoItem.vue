@@ -30,5 +30,6 @@ export default {
             this.$emit('passTodo', localTodoItem)
         }
     },
+    emits: ['passTodo']
 }
 </script>

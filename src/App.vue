@@ -2,7 +2,7 @@
   <main class="app">
     <GreetingSection />
     <AddTodo @passData="getDataFromAddTodo" />
-    <TodoList @passTodo="removeTodo" @getPassedTodo="deletePassedTodo" :todos_asc="todos_asc" />
+    <TodoList @getPassedTodo="deletePassedTodo" :todos_asc="todos_asc" />
   </main>
 </template>
 
@@ -31,7 +31,6 @@ export default {
         return
       }
       await axios.post('http://localhost:8000/todo', {
-        id: this.todos.length + 1,
         content: data.content,
         category: data.category,
         done: false,
@@ -39,34 +38,56 @@ export default {
       })
       this.todos.push(
         {
-          id: this.todos.length + 1,
           content: data.content,
           category: data.category,
           done: false,
           editable: false,
         }
       )
+    },
+    deletePassedTodo(localTodoItem) {
+
+      axios.delete('http://localhost:8000/del-todos', { data: localTodoItem })
+        .then(response => {
+          if (response.status === 200) {
+            console.log(response.data.message);
+            console.log(localTodoItem._id);
+            console.log(this.todos);
+            const todoIndex = this.todos.findIndex(todo => todo._id === localTodoItem._id);
+            console.log(todoIndex);
+            console.log(this.todos);
+            this.todos.splice(todoIndex, 1)
+            // this.todos = [...this.todos.filter((t) => t._id !== localTodoItem._id)];
+          }
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 500) {
+            console.log(error.response.data.error);
+          }
+        });
     }
   },
-  deletePassedTodo(localTodoItem) {
-    this.todos = this.todos.filter((t) => t !== localTodoItem)
-
-    axios.delete('http://localhost:8000/del-todos', localTodoItem)
-  },
-  async created() {
+  async mounted() {
     try {
       // first Axios request
       const response = await axios.get('http://localhost:8000/get-todos')
-      const result1 = response.data
-      this.todos = result1
-
-    } catch (error) {
-      console.error(error);
+      if (response.status !== 404 && response.status !== 500) {
+        const result1 = response.data
+        this.todos = result1
+        console.log("Todos loaded succesfully")
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        console.error(error.response.data.error);
+      } else {
+        console.error(error.message);
+      }
     }
   },
   computed: {
     todos_asc() {
-      return [...this.todos].sort((a, b) => b.id - a.id)
+      return [...this.todos].sort((a, b) => b._id - a._id)
     }
   }
 }

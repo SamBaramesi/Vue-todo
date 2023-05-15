@@ -61,6 +61,25 @@ app.get('/get-todos', async (req, res) => {
     }
 });
 
+app.delete('/del-todos', async (req, res) => {
+    try {
+        const todoId = req.body._id
+        console.log(todoId);
+
+        // Find and delete the todo item by ID
+        const deletedTodo = await Todo.findByIdAndDelete(todoId);
+
+        if (!deletedTodo) {
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+
+        return res.status(200).json({ message: 'Todo deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Start the server
 app.listen(8000, () => {
     console.log('App is listening on port 8000');

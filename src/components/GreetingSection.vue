@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
     name: "GreetingSection",
@@ -14,10 +13,5 @@ export default {
             name: ""
         }
     },
-    async created() {
-        const response = await axios.get('/api/get-name')
-        const name = response.data
-        this.name = name
-    }
 }
 </script>
