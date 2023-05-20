@@ -40,7 +40,7 @@ app.post('/todo', (req, res) => {
 
     newTodo.save().then(() => {
         // Send a response to the client
-        res.send('Todo added successfully');
+        res.send(newTodo);
     }).catch(err => {
         // Send an error response to the client
         res.status(500).send(err.message);
@@ -61,9 +61,12 @@ app.get('/get-todos', async (req, res) => {
     }
 });
 
-app.delete('/del-todos', async (req, res) => {
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.delete('/del-todos/:id', async (req, res) => {
     try {
-        const todoId = req.body._id
+        const todoId = req.params.id;
         console.log(todoId);
 
         // Find and delete the todo item by ID

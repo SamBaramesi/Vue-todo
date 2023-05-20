@@ -30,40 +30,33 @@ export default {
       if (data.content === '' || data.category === null) {
         return
       }
-      await axios.post('http://localhost:8000/todo', {
-        content: data.content,
-        category: data.category,
-        done: false,
-        editable: false,
-      })
-      this.todos.push(
-        {
+      try {
+        const response = await axios.post('http://localhost:8000/todo', {
           content: data.content,
           category: data.category,
           done: false,
           editable: false,
-        }
-      )
+        });
+        const newTodo = response.data; // Retrieve the new todo object from the server response
+        this.todos.push(newTodo); // Add the new todo object to the todos array
+      } catch (error) {
+        console.error(error);
+      }
     },
     deletePassedTodo(localTodoItem) {
-
-      axios.delete('http://localhost:8000/del-todos', { data: localTodoItem })
+      console.log(`this is the ${localTodoItem._id} ${localTodoItem.content}`)
+      axios
+        .delete(`http://localhost:8000/del-todos/${localTodoItem._id}`)
         .then(response => {
           if (response.status === 200) {
-            console.log(response.data.message);
-            console.log(localTodoItem._id);
-            console.log(this.todos);
+            // Handle successful deletion
             const todoIndex = this.todos.findIndex(todo => todo._id === localTodoItem._id);
-            console.log(todoIndex);
-            console.log(this.todos);
-            this.todos.splice(todoIndex, 1)
-            // this.todos = [...this.todos.filter((t) => t._id !== localTodoItem._id)];
+            this.todos.splice(todoIndex, 1);
           }
         })
         .catch(error => {
-          if (error.response && error.response.status === 500) {
-            console.log(error.response.data.error);
-          }
+          // Handle error
+          console.error(error);
         });
     }
   },

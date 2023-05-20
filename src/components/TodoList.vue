@@ -1,7 +1,7 @@
 <template>
     <section class="todo-list">
         <div class="list" id="todo-list">
-            <div v-for="todoItem in todos_asc" :key="todoItem.id" :class="`todo-item ${todoItem.done && 'done'}`">
+            <div v-for="todoItem in todos_asc" :key="todoItem._id" :class="`todo-item ${todoItem.done && 'done'}`">
                 <TodoItem @passTodo="getPassedTodo" :todoItem="todoItem"  />
             </div>
         </div>
