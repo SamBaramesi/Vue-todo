@@ -47,6 +47,18 @@ app.post('/todo', (req, res) => {
     });
 });
 
+app.put('/update-todo/:id', (req, res) => {
+    const todoId = req.params.id;
+    const updatedTodo = req.body;
+    Todo.findByIdAndUpdate(todoId, updatedTodo)
+        .then(updatedTodo => {
+            res.status(200).json(updatedTodo);
+        })
+        .catch(error => {
+            res.status(500).json({ error: 'Failed to update the todo' });
+        });
+});
+
 // Define a route for the homepage
 app.get('/get-todos', async (req, res) => {
     try {

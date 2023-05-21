@@ -58,16 +58,20 @@ export default {
           // Handle error
           console.error(error);
         });
+    },
+    getCreatedAtTimestamp(id) {
+      // Extract the timestamp from the MongoDB _id field
+      const timestamp = parseInt(id.substring(0, 8), 16) * 1000; // Multiply by 1000 to convert to milliseconds
+      return timestamp;
     }
   },
   async mounted() {
     try {
-      // first Axios request
       const response = await axios.get('http://localhost:8000/get-todos')
       if (response.status !== 404 && response.status !== 500) {
         const result1 = response.data
         this.todos = result1
-        console.log("Todos loaded succesfully")
+        console.log("Todos loaded successfully")
       }
     }
     catch (error) {
@@ -80,8 +84,12 @@ export default {
   },
   computed: {
     todos_asc() {
-      return [...this.todos].sort((a, b) => b._id - a._id)
+      const undoneTodos = this.todos.filter(todo => !todo.done);
+      const doneTodos = this.todos.filter(todo => todo.done);
+      undoneTodos.sort((a, b) => this.getCreatedAtTimestamp(b._id) - this.getCreatedAtTimestamp(a._id));
+      doneTodos.sort((a, b) => this.getCreatedAtTimestamp(b._id) - this.getCreatedAtTimestamp(a._id));
+      return [...undoneTodos, ...doneTodos];
     }
   }
-}
+};
 </script>
